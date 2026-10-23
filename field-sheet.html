@@ -1,0 +1,197 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>现场观测记录表 · 一池活水 D-E091</title>
+<style>
+  @page { size: A4 portrait; margin: 0; }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: #eef2f1;
+    font-family: "Microsoft YaHei", "PingFang SC", "Source Han Sans SC", sans-serif;
+    color: #111;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .toolbar {
+    max-width: 210mm; margin: 10mm auto 6mm; padding: 10px 14px;
+    background: #fff; border: 1px solid #cfdad7; border-left: 4px solid #0e6f68;
+    border-radius: 6px; font-size: 12.5px; line-height: 1.7; color: #3d5350;
+  }
+  .toolbar b { color: #0e6f68; }
+  .toolbar kbd {
+    font-family: Consolas, monospace; background: #eef4f2; border: 1px solid #cfdad7;
+    border-radius: 3px; padding: 0 4px; font-size: 11.5px;
+  }
+
+  .sheet {
+    width: 210mm; min-height: 297mm; background: #fff;
+    margin: 0 auto 10mm; padding: 11mm 12mm 8mm;
+    box-shadow: 0 2px 14px rgba(16, 38, 36, .12);
+  }
+
+  /* ---------------- 抬头 ---------------- */
+  .hd { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #111; padding-bottom: 3mm; }
+  .hd h1 { margin: 0; font-size: 19pt; letter-spacing: .02em; }
+  .hd .sub { font-size: 8.6pt; color: #444; margin-top: 1.2mm; }
+  .hd .rt { text-align: right; font-size: 8.4pt; color: #333; line-height: 1.7; }
+
+  /* ---------------- 基本信息 ---------------- */
+  .meta {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+    border: 1px solid #111; border-top: none;
+  }
+  .meta div { padding: 2.2mm 2.6mm; font-size: 8.8pt; border-right: 1px solid #111; }
+  .meta div:last-child { border-right: none; }
+  .meta b { font-weight: 600; color: #000; }
+  .meta .blank { display: inline-block; border-bottom: 1px solid #999; min-width: 14mm; height: 3.4mm; }
+  .meta .blank.w { min-width: 30mm; }
+
+  .rounds { display: flex; gap: 3mm; align-items: center; font-size: 8.8pt; padding: 2.2mm 2.6mm; border: 1px solid #111; border-top: none; }
+  .rounds .bx { display: inline-flex; align-items: center; gap: 1.2mm; }
+  .rounds .bx i { display: inline-block; width: 3.6mm; height: 3.6mm; border: 1px solid #111; }
+
+  /* ---------------- 主表 ---------------- */
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  th, td { border: 1px solid #111; font-size: 8.6pt; }
+  th { background: #eef4f2; font-weight: 600; padding: 1.8mm 1.4mm; text-align: center; }
+  th .u { display: block; font-weight: 400; font-size: 7.4pt; color: #4a4a4a; margin-top: .6mm; }
+  td.k { background: #f7faf9; padding: 1.6mm 2mm; font-weight: 600; }
+  td.k .u { display: block; font-weight: 400; font-size: 7.4pt; color: #4a4a4a; margin-top: .5mm; }
+  td.v { height: 12.4mm; }
+  td.v.tall { height: 15.6mm; }
+
+  .sec-title { font-size: 9.4pt; font-weight: 700; margin: 3.4mm 0 1.6mm; letter-spacing: .02em; }
+  .sec-title span { font-weight: 400; font-size: 8pt; color: #555; margin-left: 2mm; }
+
+  /* ---------------- 下方两栏 ---------------- */
+  .cols { display: grid; grid-template-columns: 1.05fr 1fr; gap: 3mm; margin-top: 3mm; }
+  .card { border: 1px solid #111; padding: 2.4mm 3mm; }
+  .card h3 { margin: 0 0 1.8mm; font-size: 9pt; }
+  .card h3 span { font-weight: 400; font-size: 7.6pt; color: #555; }
+  .card table { font-size: 8.2pt; }
+  .card td, .card th { padding: 1.4mm 1.6mm; }
+  .card td.v { height: 8mm; }
+  .chk { font-size: 8.2pt; line-height: 2.1; }
+  .chk i { display: inline-block; width: 3.2mm; height: 3.2mm; border: 1px solid #111; vertical-align: -0.5mm; margin-right: 1.6mm; }
+
+  /* ---------------- 页脚 ---------------- */
+  .ruled { margin-top: 1.5mm; }
+  .ruled div { border-bottom: 1px solid #b9b9b9; height: 8.6mm; }
+
+  .ft { margin-top: 3.6mm; border-top: 1px dashed #999; padding-top: 2mm; font-size: 7.8pt; color: #444; line-height: 1.75; }
+  .ft b { color: #000; }
+  .ft .num { float: right; font-family: Consolas, monospace; white-space: nowrap; margin-left: 4mm; }
+
+  @media print {
+    body { background: #fff; }
+    .toolbar { display: none; }
+    .sheet { margin: 0; box-shadow: none; width: 210mm; min-height: 297mm; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <b>打印说明</b>：<kbd>Ctrl</kbd> + <kbd>P</kbd> → 纸张 <b>A4</b>、方向 <b>纵向</b>、边距 <b>无</b>、勾选 <b>背景图形</b>。
+  每次采样打印 1 张，现场用铅笔或圆珠笔填，回来照抄进 <b>data.js</b>。填错了划掉重写，别涂改。
+</div>
+
+<div class="sheet">
+
+  <div class="hd">
+    <div>
+      <h1>现场观测记录表</h1>
+      <div class="sub">一池活水 · 校园池塘清淤后生态恢复纵向跟踪调查与科普行动</div>
+    </div>
+    <div class="rt">
+      项目编号 D-E091<br>
+      共 6 轮 · 每轮 1 张
+    </div>
+  </div>
+
+  <div class="meta">
+    <div><b>日期</b> <span class="blank"></span> 月 <span class="blank" style="min-width:9mm"></span> 日</div>
+    <div><b>时段</b> <span class="blank" style="min-width:11mm"></span> — <span class="blank" style="min-width:11mm"></span></div>
+    <div><b>天气</b> 晴 / 多云 / 阴 / 雨</div>
+    <div><b>记录人</b> <span class="blank w"></span></div>
+  </div>
+
+  <div class="rounds">
+    <b>第几轮</b>
+    <span class="bx"><i></i>1</span>
+    <span class="bx"><i></i>2</span>
+    <span class="bx"><i></i>3</span>
+    <span class="bx"><i></i>4</span>
+    <span class="bx"><i></i>5</span>
+    <span class="bx"><i></i>6</span>
+    <span style="margin-left:auto; color:#444">本轮是否测了对照池：<span class="bx"><i></i>是</span> <span class="bx"><i></i>否</span></span>
+  </div>
+
+  <div class="sec-title">一、主池塘 · 4 个固定点位<span>每个点位都站在同一块固定位置测；点位编号自定，第一次定好后就不要改</span></div>
+
+  <table>
+    <colgroup>
+      <col style="width:34mm"><col><col><col><col>
+    </colgroup>
+    <thead>
+      <tr>
+        <th>监测指标</th>
+        <th>1 号点位<span class="u">进水口附近</span></th>
+        <th>2 号点位<span class="u">塘心</span></th>
+        <th>3 号点位<span class="u">岸边</span></th>
+        <th>4 号点位<span class="u">植被区</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="k">水温<span class="u">℃，水下 10–20 cm，等 1 分钟</span></td><td class="v"></td><td class="v"></td><td class="v"></td><td class="v"></td></tr>
+      <tr><td class="k">pH<span class="u">试纸蘸水 1 秒，30 秒内比色</span></td><td class="v"></td><td class="v"></td><td class="v"></td><td class="v"></td></tr>
+      <tr><td class="k">透明度<span class="u">cm，透明度盘下沉至看不见的深度</span></td><td class="v"></td><td class="v"></td><td class="v"></td><td class="v"></td></tr>
+      <tr><td class="k">溶解氧<span class="u">mg/L，取水下 10 cm 的水，别晃出气泡</span></td><td class="v"></td><td class="v"></td><td class="v"></td><td class="v"></td></tr>
+      <tr><td class="k">蚊虫幼虫<span class="u">只/勺；每两周测 1 次，本周不测写「—」</span></td><td class="v"></td><td class="v"></td><td class="v"></td><td class="v"></td></tr>
+      <tr><td class="k">水生植物<span class="u">株 / 1 m×1 m 样方，另在右侧写新芽情况</span></td><td class="v"></td><td class="v"></td><td class="v"></td><td class="v"></td></tr>
+      <tr><td class="k">水色<span class="u">清 / 黄绿 / 绿 / 灰褐，可加「能否见底」</span></td><td class="v"></td><td class="v"></td><td class="v"></td><td class="v"></td></tr>
+      <tr><td class="k">异味<span class="u">无 / 轻腥 / 明显腐臭</span></td><td class="v"></td><td class="v"></td><td class="v"></td><td class="v"></td></tr>
+      <tr><td class="k">现场备注<span class="u">水面的浮沫、新垃圾、水位、异常情况</span></td><td class="v tall"></td><td class="v tall"></td><td class="v tall"></td><td class="v tall"></td></tr>
+    </tbody>
+  </table>
+
+  <div class="cols">
+    <div class="card">
+      <h3>二、对照池 <span>未清淤的老池塘，同一天顺手测</span></h3>
+      <table>
+        <tbody>
+          <tr><td class="k" style="width:26mm">透明度 cm</td><td class="v"></td></tr>
+          <tr><td class="k">幼虫 只/勺</td><td class="v"></td></tr>
+          <tr><td class="k">水色 / 异味</td><td class="v"></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>三、拍照清单 <span>拍完在框里打勾，回来一起传</span></h3>
+      <div class="chk">
+        <i></i>4 个点位的站位照（能找到同一条岸线）<br>
+        <i></i>透明度盘读数（盘和水面同框）<br>
+        <i></i>试管 + 比色卡（白纸垫底，自然光）<br>
+        <i></i>记录表铺开的全家福（证明数据来源）<br>
+        <i></i>水面 / 岸边的生境照
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-title">四、本轮小结<span>写一两句：和上一轮比，哪里明显变了？有没有异常（发现死鱼、水位骤降、有人投喂、垃圾堆积）？</span></div>
+  <div class="ruled"><div></div><div></div></div>
+
+  <div class="ft">
+    <b>填表三条</b>：一、同一天同一时段测完 4 个点位，别隔到下午；二、下雨或大风天照测，但在备注写「雨后第 1 天」「风大」；三、看不清、拿不准的数，写「约」或留空，别猜一个整数填上去。
+    <span class="num">D-E091 · 现场表</span>
+  </div>
+
+</div>
+
+</body>
+</html>

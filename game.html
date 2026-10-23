@@ -1,0 +1,765 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>寻找「活水」密码 · 池塘生态恢复找不同</title>
+<link rel="stylesheet" href="assets/base.css">
+<style>
+  :root {
+    --bg-deep: #0b2422;
+    --ink-light: #eaf5f2;
+    --ink-dim: #9fbdb8;
+  }
+  html, body { height: 100%; }
+  body {
+    background: radial-gradient(120% 90% at 50% 0%, #12403b 0%, #0a2422 55%, #061614 100%);
+    background-attachment: fixed;
+    color: var(--ink-light);
+    overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* 手机上连点两下会触发双击缩放，找不同正是连点的玩法，直接关掉 */
+    touch-action: manipulation;
+    overscroll-behavior: none;
+  }
+
+  .app {
+    height: 100dvh;
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+  }
+
+  /* ---------------------------------------------------------- HUD */
+  .hud {
+    display: flex; align-items: center; gap: 16px;
+    padding: 14px 22px 10px;
+  }
+  .hud__back {
+    display: grid; place-items: center; width: 34px; height: 34px; flex: none;
+    border-radius: 50%; border: 1px solid rgba(255, 255, 255, .16);
+    color: var(--ink-dim); font-size: 15px; text-decoration: none;
+    transition: background .16s, color .16s;
+  }
+  .hud__back:hover { background: rgba(255, 255, 255, .08); color: var(--ink-light); text-decoration: none; }
+  .hud__title b { display: block; font-size: 16px; letter-spacing: .04em; }
+  .hud__title span { display: block; font-size: 11.5px; color: var(--ink-dim); letter-spacing: .06em; }
+
+  .hud__meters { margin-left: auto; display: flex; align-items: stretch; gap: 10px; }
+  .meter {
+    min-width: 88px; padding: 7px 14px; border-radius: 12px;
+    background: rgba(255, 255, 255, .06);
+    border: 1px solid rgba(255, 255, 255, .1);
+    text-align: center;
+  }
+  .meter__label { font-size: 10.5px; color: var(--ink-dim); letter-spacing: .1em; }
+  .meter__value {
+    font-family: var(--font-num); font-size: 22px; font-weight: 700;
+    line-height: 1.25; color: #7fe6d8; font-variant-numeric: tabular-nums;
+  }
+  .meter__value span { font-size: 13px; color: var(--ink-dim); font-weight: 500; }
+  .meter.is-urgent .meter__value { color: #ff8f6b; animation: urgent 1s ease-in-out infinite; }
+  @keyframes urgent { 50% { opacity: .45; } }
+
+  .timebar { height: 3px; background: rgba(255, 255, 255, .08); }
+  .timebar i {
+    display: block; height: 100%; width: 100%;
+    background: linear-gradient(90deg, #35c2b3, #7fe6d8);
+    transition: width .12s linear, background .3s;
+  }
+  .timebar.is-urgent i { background: linear-gradient(90deg, #ff8f6b, #ffb38f); }
+
+  .btn-mini {
+    border: 1px solid rgba(255, 255, 255, .16); background: rgba(255, 255, 255, .05);
+    color: var(--ink-dim); border-radius: 10px; padding: 8px 13px; font-size: 12.5px;
+    font-family: inherit; cursor: pointer; transition: .16s; white-space: nowrap;
+  }
+  .btn-mini:hover { background: rgba(255, 255, 255, .12); color: var(--ink-light); }
+
+  /* ---------------------------------------------------------- 舞台 */
+  .stage {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
+    padding: 12px 22px 6px; min-height: 0; overflow: auto;
+    align-content: center;
+  }
+  .pane { display: flex; flex-direction: column; gap: 9px; min-width: 0; }
+  .pane__frame {
+    position: relative; width: 100%; aspect-ratio: 480 / 340;
+    border-radius: 16px; overflow: hidden; background: #0a1e1c;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, .1), 0 22px 50px -26px rgba(0, 0, 0, .9);
+    transition: box-shadow .3s;
+  }
+  .pane__frame.is-live { cursor: crosshair; }
+  .pane__frame.is-live::after {
+    content: ""; position: absolute; inset: 0; border-radius: 16px; pointer-events: none;
+    box-shadow: inset 0 0 0 2px rgba(53, 194, 179, .55), inset 0 0 32px -10px rgba(53, 194, 179, .5);
+    animation: livePulse 3.2s ease-in-out infinite;
+  }
+  @keyframes livePulse { 50% { box-shadow: inset 0 0 0 2px rgba(53, 194, 179, .2), inset 0 0 32px -10px rgba(53, 194, 179, .1); } }
+  .pane__frame.is-won::after {
+    box-shadow: inset 0 0 0 3px rgba(255, 209, 102, .8), inset 0 0 40px -6px rgba(255, 209, 102, .45);
+    animation: none;
+  }
+  .pane__frame.shake { animation: shake .3s; }
+  @keyframes shake {
+    25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-3px); }
+  }
+  .pane__frame svg { display: block; width: 100%; height: 100%; }
+
+  .pane__cap {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--ink-dim); padding: 0 4px;
+  }
+  .pane__cap b { color: var(--ink-light); font-weight: 600; }
+  .pane__cap .hint { color: #7fe6d8; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  .dot--dead { background: #9aa65f; box-shadow: 0 0 0 3px rgba(154, 166, 95, .18); }
+
+  /* 命中区与标记 */
+  .hit { cursor: crosshair; }
+  .mark { opacity: 0; transform-box: fill-box; transform-origin: 50% 50%; pointer-events: none; }
+  .mark.on { animation: markPop .42s cubic-bezier(.2, .9, .3, 1.25) forwards; }
+  .mark.hint { opacity: .5; }
+  @keyframes markPop {
+    from { opacity: 0; transform: scale(.72); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  .mark .ring {
+    fill: none; stroke: #ffd166; stroke-width: 5; stroke-linecap: round;
+    stroke-dasharray: 15 10;
+    filter: drop-shadow(0 2px 7px rgba(0, 0, 0, .55));
+    animation: dashSpin 14s linear infinite;
+  }
+  .mark.hint .ring { stroke: #ffffff; stroke-opacity: .7; }
+  @keyframes dashSpin { to { stroke-dashoffset: -250; } }
+
+  /* ---------------------------------------------------------- 收集栏 */
+  .tray {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    padding: 12px 22px 16px;
+  }
+  .tray__label { font-size: 11.5px; color: var(--ink-dim); letter-spacing: .1em; margin-right: 2px; }
+  .slot {
+    font-size: 12px; color: var(--ink-dim); border: 1px dashed rgba(255, 255, 255, .18);
+    border-radius: 999px; padding: 5px 12px; transition: .25s; white-space: nowrap;
+  }
+  .slot.on {
+    color: #06211f; background: linear-gradient(180deg, #a8f0e5, #6fd8ca);
+    border: 1px solid transparent; font-weight: 600;
+    box-shadow: 0 6px 16px -8px rgba(111, 216, 202, .9);
+  }
+  .tray__spacer { margin-left: auto; }
+
+  /* ---------------------------------------------------------- 提示条 */
+  .toast {
+    position: fixed; left: 50%; bottom: 84px; transform: translate(-50%, 14px);
+    max-width: min(660px, calc(100vw - 36px));
+    background: rgba(12, 42, 39, .92); border: 1px solid rgba(127, 230, 216, .35);
+    color: var(--ink-light); border-radius: 14px; padding: 12px 18px;
+    font-size: 13.5px; line-height: 1.65; box-shadow: 0 24px 50px -24px rgba(0, 0, 0, .95);
+    opacity: 0; pointer-events: none; transition: opacity .22s, transform .22s;
+    backdrop-filter: blur(8px); z-index: 30;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .toast b { color: #ffd166; }
+  .toast.miss { border-color: rgba(255, 143, 107, .4); }
+  .toast.miss b { color: #ffb38f; }
+
+  /* ---------------------------------------------------------- 遮罩 / 卡片 */
+  .veil {
+    position: fixed; inset: 0; z-index: 60; display: grid; place-items: center;
+    padding: 22px; background: rgba(4, 17, 16, .74);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    opacity: 0; pointer-events: none; transition: opacity .26s;
+  }
+  .veil.on { opacity: 1; pointer-events: auto; }
+  .sheet {
+    width: min(620px, 100%); max-height: 90dvh; overflow: auto;
+    background: linear-gradient(180deg, #ffffff, #f5fbf9);
+    color: var(--ink); border-radius: 22px; padding: 30px 30px 26px;
+    box-shadow: 0 50px 90px -40px rgba(0, 0, 0, .95);
+    transform: translateY(12px) scale(.985); transition: transform .28s;
+  }
+  .veil.on .sheet { transform: none; }
+  .sheet__badge {
+    display: inline-block; font-size: 11.5px; letter-spacing: .1em; color: var(--teal);
+    background: var(--teal-soft); border-radius: 999px; padding: 4px 12px;
+  }
+  .sheet h2 { font-size: 25px; margin: 14px 0 0; letter-spacing: -.01em; }
+  .sheet__lead { margin-top: 12px; font-size: 14.5px; line-height: 1.8; color: var(--ink-2); }
+  .sheet__rules { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 9px; }
+  .sheet__rules li {
+    position: relative; padding-left: 26px; font-size: 14px; color: var(--ink-2); line-height: 1.7;
+  }
+  .sheet__rules li::before {
+    content: "✓"; position: absolute; left: 0; top: 0; color: var(--aqua); font-weight: 700;
+  }
+  .sheet b { color: var(--teal); }
+  .sheet__actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
+  .finding {
+    list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 8px;
+  }
+  .finding li {
+    display: flex; gap: 10px; align-items: baseline; font-size: 13.5px;
+    background: #f4faf8; border: 1px solid #dcece8; border-radius: 10px; padding: 9px 12px;
+  }
+  .finding .tag {
+    flex: none; font-size: 11px; color: var(--teal); background: #fff;
+    border: 1px solid #cfe6e1; border-radius: 6px; padding: 1px 7px; margin-top: 1px;
+  }
+  .finding .nm { font-weight: 600; color: var(--ink); }
+  .finding .fc { color: var(--muted); font-size: 12.5px; }
+  .science {
+    margin-top: 18px; border-left: 3px solid var(--aqua); background: #f2faf8;
+    padding: 13px 16px; border-radius: 0 10px 10px 0; font-size: 13.5px;
+    line-height: 1.85; color: var(--ink-2);
+  }
+
+  /* ---------------------------------------------------------- 响应式 */
+  /* 触屏：指针粗、没有悬停，hover 的位移和放大在手机上只会闪一下 */
+  @media (hover: none) {
+    .btn-mini:hover { background: rgba(255, 255, 255, .05); color: var(--ink-dim); }
+    .hud__back:hover { background: none; color: var(--ink-dim); }
+  }
+
+  /* 平板 / 手机竖屏：两张图上下排。手机屏幕窄，并排每张只有 180px，
+     圈选精度不够，所以宁可让玩家上下对照。 */
+  @media (max-width: 880px) {
+    body { overflow: auto; }
+    .app {
+      height: auto; min-height: 100dvh;
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+    /* HUD 吸顶：计时和「已找到 x/3」在滚到第二张图时也得看得见 */
+    .hud {
+      position: sticky; top: 0; z-index: 25;
+      padding: 12px 14px 8px; gap: 10px;
+      background: rgba(10, 36, 34, .88);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, .07);
+    }
+    .timebar { position: sticky; top: 0; z-index: 26; }
+    .hud__title span { display: none; }
+    .hud__back { width: 40px; height: 40px; font-size: 17px; }
+    .stage { grid-template-columns: 1fr; gap: 16px; padding: 12px 14px 4px; }
+    .pane__frame { border-radius: 14px; }
+    .tray { padding: 10px 14px 22px; }
+    .toast { bottom: 96px; }
+  }
+
+  @media (max-width: 560px) {
+    .hud__meters { gap: 8px; }
+    .hud__meters .meter { min-width: 64px; padding: 6px 9px; border-radius: 10px; }
+    .meter__label { font-size: 9.5px; letter-spacing: .06em; }
+    .meter__value { font-size: 18px; }
+    .hud__title b { font-size: 15px; }
+    .pane__cap { font-size: 12px; }
+    .slot { font-size: 11.5px; padding: 4px 10px; }
+    .tray { gap: 6px; }
+    .sheet { padding: 24px 20px 22px; border-radius: 18px; }
+    .sheet h2 { font-size: 21px; }
+    .sheet__lead { font-size: 13.5px; }
+    .sheet__actions .btn { flex: 1 1 auto; text-align: center; }
+    .toast { bottom: 84px; font-size: 13px; padding: 10px 15px; }
+  }
+
+  /* 手机横屏：高度很矮，回到并排，压掉说明文字，保证两张图同屏 */
+  @media (max-height: 520px) and (min-width: 561px) {
+    .app { height: 100dvh; }
+    .hud { padding: 6px 12px 4px; }
+    .hud__title span { display: none; }
+    .stage { grid-template-columns: 1fr 1fr; gap: 10px; padding: 6px 12px 2px; }
+    .pane__cap { display: none; }
+    .pane { gap: 0; }
+    .tray { padding: 6px 12px 8px; }
+    .tray__label { display: none; }
+    .slot { font-size: 11px; padding: 3px 9px; }
+    .toast { bottom: 56px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mark.on { animation: none; opacity: 1; }
+    .mark .ring, .pane__frame.is-live::after { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="hud">
+    <a class="hud__back" href="index.html" title="返回项目主页">←</a>
+    <div class="hud__title">
+      <b>寻找「活水」密码</b>
+      <span>池塘生态恢复 · 找不同</span>
+    </div>
+    <div class="hud__meters">
+      <div class="meter" id="meterTime">
+        <div class="meter__label">剩余时间</div>
+        <div class="meter__value" id="timeLeft">30</div>
+      </div>
+      <div class="meter">
+        <div class="meter__label">已找到</div>
+        <div class="meter__value" id="foundCount">0<span>/3</span></div>
+      </div>
+      <button class="btn-mini" id="btnRestart" type="button">重来</button>
+    </div>
+  </header>
+
+  <div class="timebar" id="timebar"><i></i></div>
+
+  <main class="stage">
+    <section class="pane">
+      <div class="pane__frame is-live" id="sceneBefore"></div>
+      <p class="pane__cap"><span class="dot dot--dead"></span><b>清淤前</b>· 死水池塘
+        <span class="hint">这里有的，右边还在吗？</span></p>
+    </section>
+    <section class="pane">
+      <div class="pane__frame is-live" id="sceneAfter"></div>
+      <p class="pane__cap"><span class="dot dot--live" style="background:#35c2b3;box-shadow:0 0 0 3px rgba(53,194,179,.22)"></span>
+        <b>清淤后</b>· 活水池塘 <span class="hint">这里多出来的，圈出来</span></p>
+    </section>
+  </main>
+
+  <footer class="tray" id="tray">
+    <span class="tray__label">已解锁</span>
+    <span class="slot" data-slot="clear">透明度</span>
+    <span class="slot" data-slot="scum">浮沫</span>
+    <span class="slot" data-slot="larva">幼虫</span>
+    <span class="slot" data-slot="fish">小鱼</span>
+    <span class="slot" data-slot="plant">水生植物</span>
+    <span class="slot" data-slot="sediment">底泥</span>
+    <span class="tray__spacer"></span>
+    <span class="slot" style="border-style:solid;pointer-events:none" id="scoreHint">找满 3 处即挑战成功</span>
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="veil on" id="veil">
+  <div class="sheet" id="sheet"></div>
+</div>
+
+<script src="assets/pond.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ================================================================
+     差异点定义
+     mark = 找到后画圈的位置（SVG 视图坐标系 480×340）
+     hit  = 点击命中区域；数组顺序即层级，越靠后越优先
+     ================================================================ */
+  var NEED = 3;
+  var LIMIT = 30;
+
+  /* side = 该变化「看得见」的那张图：
+     before —— 左边有、右边没了（消失型，点在左图）
+     after  —— 左边没有、右边多了（新增型，点在右图） */
+  var DIFFS = [
+    {
+      key: 'clear', side: 'after', tag: '透明度', name: '水体变清了',
+      mark: { t: 'e', cx: 168, cy: 164, rx: 96, ry: 52 },
+      hit:  { x: 100, y: 128, w: 206, h: 118 },
+      fact: '水色由浑绿转为清亮，悬浮物沉降、光线能透进水下——这就是「透明度」指标的直观表现。'
+    },
+    {
+      key: 'scum', side: 'before', tag: '有机负荷', name: '水面浮沫与藻膜消失了',
+      mark: { t: 'r', x: 34, y: 47, w: 412, h: 23, rx: 11 },
+      hit:  { x: 22, y: 37, w: 436, h: 37 },
+      fact: '水面不再有浮沫和藻膜，说明有机质与氮磷负荷下降，富营养化的压力减轻了。'
+    },
+    {
+      key: 'larva', side: 'before', tag: '幼虫密度', name: '蚊虫幼虫大量减少',
+      mark: { t: 'e', cx: 140, cy: 114, rx: 76, ry: 42 },
+      hit:  { x: 56, y: 74, w: 172, h: 82 },
+      fact: '「幼虫勺捞法」是项目的重点监测方法——幼虫密度是池塘有没有重新变成蚊虫滋生地的直接证据。'
+    },
+    {
+      key: 'fish', side: 'after', tag: '溶解氧', name: '小鱼等水生动物回来了',
+      mark: { t: 'e', cx: 258, cy: 216, rx: 62, ry: 44 },
+      hit:  { x: 200, y: 180, w: 112, h: 78 },
+      fact: '水里重新出现鱼和水生昆虫，说明溶解氧（DO）与食物链条件在恢复，生物多样性开始回升。'
+    },
+    {
+      key: 'plant', side: 'after', tag: '植物成活率', name: '沉水植物着床、抽新芽',
+      mark: { t: 'e', cx: 384, cy: 212, rx: 74, ry: 72 },
+      hit:  { x: 312, y: 146, w: 150, h: 136 },
+      fact: '水生植物成活率是核心生态指标：植物吸收营养盐、稳固底质，是自净能力重建的关键一环。'
+    },
+    {
+      key: 'sediment', side: 'before', tag: '内源污染', name: '底泥变薄、底质改善了',
+      mark: { t: 'r', x: 30, y: 290, w: 268, h: 38, rx: 16 },
+      hit:  { x: 22, y: 282, w: 282, h: 52 },
+      fact: '物理清淤带走了富集营养盐的底泥，抑制内源污染释放——这就是「清淤是生态恢复的基础窗口」的意思。'
+    }
+  ];
+
+  var NS = 'http://www.w3.org/2000/svg';
+
+  var el = {
+    before:  document.getElementById('sceneBefore'),
+    after:   document.getElementById('sceneAfter'),
+    timeLeft: document.getElementById('timeLeft'),
+    meterTime: document.getElementById('meterTime'),
+    timebar: document.getElementById('timebar'),
+    foundCount: document.getElementById('foundCount'),
+    toast:   document.getElementById('toast'),
+    veil:    document.getElementById('veil'),
+    sheet:   document.getElementById('sheet'),
+    tray:    document.getElementById('tray'),
+    scoreHint: document.getElementById('scoreHint')
+  };
+
+  var state = {
+    running: false,
+    free: false,
+    found: [],
+    remain: LIMIT,
+    endAt: 0,
+    clock: null,
+    toastTimer: null,
+    startedAt: 0
+  };
+
+  /* -------------------------------------------------------------- 建场景 */
+  var sceneSvg = {
+    before: PondScene.render(el.before, 'before'),
+    after:  PondScene.render(el.after,  'after')
+  };
+  var paneFrame = { before: el.before, after: el.after };
+
+  DIFFS.forEach(function (d) {
+    var g = document.createElementNS(NS, 'g');
+    g.setAttribute('class', 'mark');
+    g.setAttribute('data-mark', d.key);
+
+    var ring;
+    if (d.mark.t === 'r') {
+      ring = document.createElementNS(NS, 'rect');
+      ring.setAttribute('x', d.mark.x);
+      ring.setAttribute('y', d.mark.y);
+      ring.setAttribute('width', d.mark.w);
+      ring.setAttribute('height', d.mark.h);
+      ring.setAttribute('rx', d.mark.rx);
+    } else {
+      ring = document.createElementNS(NS, 'ellipse');
+      ring.setAttribute('cx', d.mark.cx);
+      ring.setAttribute('cy', d.mark.cy);
+      ring.setAttribute('rx', d.mark.rx);
+      ring.setAttribute('ry', d.mark.ry);
+    }
+    ring.setAttribute('class', 'ring');
+    g.appendChild(ring);
+    sceneSvg[d.side].appendChild(g);      // 标记在下
+  });
+
+  DIFFS.forEach(function (d) {            // 命中区在上（后添加 = 优先）
+    var r = document.createElementNS(NS, 'rect');
+    r.setAttribute('x', d.hit.x);
+    r.setAttribute('y', d.hit.y);
+    r.setAttribute('width', d.hit.w);
+    r.setAttribute('height', d.hit.h);
+    r.setAttribute('fill', '#ffffff');
+    r.setAttribute('fill-opacity', '0.001');
+    r.setAttribute('pointer-events', 'all');
+    r.setAttribute('class', 'hit');
+    r.setAttribute('data-diff', d.key);
+    sceneSvg[d.side].appendChild(r);
+  });
+
+  var markEls = {};
+  ['before', 'after'].forEach(function (side) {
+    Array.prototype.forEach.call(sceneSvg[side].querySelectorAll('[data-mark]'), function (n) {
+      markEls[n.getAttribute('data-mark')] = n;
+    });
+  });
+
+  /* -------------------------------------------------------------- 工具 */
+  function diffByKey(k) {
+    for (var i = 0; i < DIFFS.length; i++) { if (DIFFS[i].key === k) { return DIFFS[i]; } }
+    return null;
+  }
+
+  function toast(html, kind, ms) {
+    el.toast.innerHTML = html;
+    el.toast.className = 'toast show' + (kind === 'miss' ? ' miss' : '');
+    clearTimeout(state.toastTimer);
+    state.toastTimer = setTimeout(function () {
+      el.toast.className = 'toast' + (kind === 'miss' ? ' miss' : '');
+    }, ms || 4200);
+  }
+
+  function paintTime() {
+    var s = Math.ceil(state.remain);
+    el.timeLeft.textContent = s < 0 ? 0 : s;
+    var pct = Math.max(0, Math.min(1, state.remain / LIMIT));
+    el.timebar.firstElementChild.style.width = (pct * 100) + '%';
+    var urgent = state.remain <= 10 && state.running;
+    el.meterTime.classList.toggle('is-urgent', urgent);
+    el.timebar.classList.toggle('is-urgent', urgent);
+  }
+
+  function paintCount() {
+    var n = state.found.length;
+    el.foundCount.innerHTML = n + '<span>/' + NEED + '</span>';
+    el.scoreHint.textContent = n >= NEED
+      ? (n >= DIFFS.length ? '全部找到 6 / 6' : '已成功！还能继续找齐 6 处')
+      : '还差 ' + (NEED - n) + ' 处即可挑战成功';
+  }
+
+  function paintSlots() {
+    Array.prototype.forEach.call(el.tray.querySelectorAll('.slot[data-slot]'), function (s) {
+      s.classList.toggle('on', state.found.indexOf(s.getAttribute('data-slot')) !== -1);
+    });
+  }
+
+  /* -------------------------------------------------------------- 时钟 */
+  function startClock() {
+    state.endAt = performance.now() + state.remain * 1000;
+    stopClock();
+    state.clock = setInterval(function () {
+      state.remain = Math.max(0, (state.endAt - performance.now()) / 1000);
+      paintTime();
+      if (state.remain <= 0) { stopClock(); onTimeUp(); }
+    }, 60);
+  }
+  function stopClock() {
+    if (state.clock) { clearInterval(state.clock); state.clock = null; }
+  }
+
+  /* -------------------------------------------------------------- 流程 */
+  function reset() {
+    stopClock();
+    state.running = false;
+    state.free = false;
+    state.found = [];
+    state.remain = LIMIT;
+    state.startedAt = 0;
+    Object.keys(markEls).forEach(function (k) {
+      markEls[k].setAttribute('class', 'mark');
+    });
+    el.after.classList.remove('is-won');
+    el.before.classList.remove('is-won');
+    el.foundCount.innerHTML = '0<span>/' + NEED + '</span>';
+    el.timeLeft.textContent = LIMIT;
+    el.timebar.firstElementChild.style.width = '100%';
+    el.timebar.classList.remove('is-urgent');
+    el.meterTime.classList.remove('is-urgent');
+    el.toast.className = 'toast';
+    paintSlots();
+    paintCount();
+  }
+
+  function start() {
+    reset();
+    state.running = true;
+    state.startedAt = performance.now();
+    el.veil.classList.remove('on');
+    paintTime();
+    startClock();
+  }
+
+  function onHit(key) {
+    if (!state.running) { return; }
+    var d = diffByKey(key);
+    if (!d) { return; }
+
+    if (state.found.indexOf(key) !== -1) {
+      toast('这一处已经圈出来啦，再看看别的地方～', 'miss', 1600);
+      return;
+    }
+
+    state.found.push(key);
+    var m = markEls[key];
+    if (m) { m.setAttribute('class', 'mark on'); }
+    paintSlots();
+    paintCount();
+
+    toast('✓ <b>' + d.name + '</b> · ' + d.fact);
+
+    if (!state.free && state.found.length >= NEED) { onSuccess(); }
+    else if (state.free && state.found.length >= DIFFS.length) { onAllFound(); }
+  }
+
+  function onMiss(side) {
+    if (!state.running) { return; }
+    var f = paneFrame[side] || el.after;
+    f.classList.remove('shake');
+    void f.offsetWidth;
+    f.classList.add('shake');
+    toast('这里还看不出来变化 —— 左右对比一下水色、水面和水底。', 'miss', 2200);
+  }
+
+  function elapsed() {
+    return state.startedAt ? ((performance.now() - state.startedAt) / 1000) : 0;
+  }
+
+  function findingsHTML(list) {
+    return '<ul class="finding">' + list.map(function (k) {
+      var d = diffByKey(k);
+      return '<li><span class="tag">' + d.tag + '</span>' +
+             '<span><span class="nm">' + d.name + '</span><br>' +
+             '<span class="fc">' + d.fact + '</span></span></li>';
+    }).join('') + '</ul>';
+  }
+
+  function onSuccess() {
+    stopClock();
+    state.running = false;
+    el.after.classList.add('is-won');
+    el.before.classList.add('is-won');
+    var t = elapsed().toFixed(1);
+
+    el.sheet.innerHTML = '' +
+      '<span class="sheet__badge">挑战成功</span>' +
+      '<h2>🎉 找到了！这池水是真「活」了</h2>' +
+      '<p class="sheet__lead">你用了 <b>' + t + ' 秒</b>找到 ' + state.found.length +
+        ' 处变化。它们正好对应项目里的三个关键指标：</p>' +
+      findingsHTML(state.found) +
+      '<div class="science"><b>水变清 = 透明度提升；水草长出来 = 水生植物成活；没有幼虫 = 幼虫密度下降。</b><br>' +
+        '这三件事同时发生，才说明水体的<b>自净能力</b>在重建——而不只是「看起来干净了」。</div>' +
+      '<div class="sheet__actions">' +
+        (state.found.length < DIFFS.length
+          ? '<button class="btn btn--primary" id="btnAll" type="button">继续找出全部 ' + DIFFS.length + ' 处</button>'
+          : '') +
+        '<button class="btn btn--ghost" id="btnAgain" type="button">再来一局</button>' +
+        '<a class="btn btn--ghost" href="index.html">看项目主页</a>' +
+      '</div>';
+
+    el.veil.classList.add('on');
+    bindSheetButtons();
+  }
+
+  function onAllFound() {
+    stopClock();
+    state.running = false;
+    el.after.classList.add('is-won');
+    el.before.classList.add('is-won');
+
+    el.sheet.innerHTML = '' +
+      '<span class="sheet__badge">全部找到</span>' +
+      '<h2>6 / 6 —— 你比大多数同学都细心</h2>' +
+      '<p class="sheet__lead">这 6 处变化，正好覆盖了项目 7 项监测指标的观察角度：</p>' +
+      findingsHTML(state.found) +
+      '<div class="science">清淤之后的池塘先「变清」，再「变活」。<br>' +
+        '透明度和溶解氧回答「水干净了吗」，水生植物和幼虫密度回答「生态回来了吗」——' +
+        '两条都成立，才叫<b>一池活水</b>。</div>' +
+      '<div class="sheet__actions">' +
+        '<button class="btn btn--primary" id="btnAgain" type="button">再来一局</button>' +
+        '<a class="btn btn--ghost" href="index.html">看项目主页</a>' +
+      '</div>';
+
+    el.veil.classList.add('on');
+    bindSheetButtons();
+  }
+
+  function onTimeUp() {
+    state.running = false;
+    var got = state.found.length;
+    var left = NEED - got;
+
+    el.sheet.innerHTML = '' +
+      '<span class="sheet__badge">时间到</span>' +
+      '<h2>差一点点！</h2>' +
+      '<p class="sheet__lead">你找到了 <b>' + got + ' 处</b>，还差 <b>' + left +
+        ' 处</b>就能解锁科普。提示：先看<b>水色</b>，再看<b>水面</b>和<b>水底</b>。</p>' +
+      (got ? findingsHTML(state.found) : '') +
+      '<div class="sheet__actions">' +
+        '<button class="btn btn--primary" id="btnHint" type="button">帮我圈出漏掉的</button>' +
+        '<button class="btn btn--ghost" id="btnAgain" type="button">再来一次</button>' +
+        '<a class="btn btn--ghost" href="index.html">先看看项目主页</a>' +
+      '</div>';
+
+    el.veil.classList.add('on');
+    bindSheetButtons();
+  }
+
+  function bindSheetButtons() {
+    var again = document.getElementById('btnAgain');
+    if (again) { again.onclick = start; }
+
+    var all = document.getElementById('btnAll');
+    if (all) {
+      all.onclick = function () {
+        el.veil.classList.remove('on');
+        state.free = true;
+        state.running = true;
+        state.remain = 0;
+        el.timeLeft.textContent = '∞';
+        el.timebar.firstElementChild.style.width = '100%';
+        el.timebar.classList.remove('is-urgent');
+        el.meterTime.classList.remove('is-urgent');
+        paintCount();
+        toast('自由探索模式：把剩下的 ' + (DIFFS.length - state.found.length) + ' 处也找出来吧！', null, 3600);
+      };
+    }
+
+    var hint = document.getElementById('btnHint');
+    if (hint) {
+      hint.onclick = function () {
+        DIFFS.forEach(function (d) {
+          if (state.found.indexOf(d.key) === -1) {
+            markEls[d.key].setAttribute('class', 'mark hint');
+          }
+        });
+        el.veil.classList.remove('on');
+        toast('白色的虚线圈就是漏掉的变化位置，看清了再来一局～', null, 4000);
+      };
+    }
+  }
+
+  /* -------------------------------------------------------------- 交互 */
+  function bindPane(side) {
+    var host = paneFrame[side];
+    host.addEventListener('click', function (e) {
+      var node = e.target;
+      while (node && node !== host) {
+        if (node.getAttribute && node.getAttribute('data-diff')) {
+          onHit(node.getAttribute('data-diff'));
+          return;
+        }
+        node = node.parentNode;
+      }
+      onMiss(side);
+    });
+  }
+  bindPane('before');
+  bindPane('after');
+
+  document.getElementById('btnRestart').addEventListener('click', function () {
+    reset();
+    showIntro();
+  });
+
+  function showIntro() {
+    el.sheet.innerHTML = '' +
+      '<span class="sheet__badge">池塘生态恢复 · 找不同</span>' +
+      '<h2>寻找「活水」密码</h2>' +
+      '<p class="sheet__lead">清淤之后的池塘，正在一点点「活」回来。<br>' +
+        '左边是清淤前的死水，右边是清淤后的活水——<b>两张图都能点</b>。</p>' +
+      '<ul class="sheet__rules">' +
+        '<li>限时 <b>30 秒</b>，找到 <b>3 处</b>即挑战成功</li>' +
+        '<li>左边「有」的东西不见了 → 点<b>左图</b>；右边新长出来的 → 点<b>右图</b></li>' +
+        '<li>两张图一共藏着 <b>6 处</b>变化，试试能不能全部找到</li>' +
+      '</ul>' +
+      '<div class="sheet__actions">' +
+        '<button class="btn btn--primary" id="btnStart" type="button">开始挑战</button>' +
+        '<a class="btn btn--ghost" href="index.html">返回项目主页</a>' +
+      '</div>';
+
+    el.veil.classList.add('on');
+    document.getElementById('btnStart').onclick = start;
+  }
+
+  reset();
+  showIntro();
+}());
+</script>
+</body>
+</html>

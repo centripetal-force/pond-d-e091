@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>摆摊游戏 · A4 打印版（含答案）｜一池活水 D-E091</title>
+<link rel="stylesheet" href="assets/base.css">
+<style>
+  /* ---------- 页面/纸张 ---------- */
+  @page { size: A4 landscape; margin: 0; }
+
+  body {
+    margin: 0;
+    background: #e7edeb;
+    color: var(--ink);
+    font-family: var(--font-sans);
+  }
+
+  .toolbar {
+    max-width: 297mm;
+    margin: 0 auto;
+    padding: 14px 4mm 6px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .toolbar b { color: var(--teal-deep); }
+  .toolbar kbd {
+    font-family: var(--font-num);
+    font-size: 12px;
+    padding: 1px 5px;
+    border: 1px solid var(--line-2);
+    border-radius: 4px;
+    background: #fff;
+  }
+
+  .sheet {
+    position: relative;
+    width: 297mm;
+    height: 210mm;
+    padding: 11mm 13mm 8mm;
+    margin: 0 auto 10mm;
+    background: #fff;
+    box-shadow: 0 18px 44px -28px rgba(10, 60, 55, .55);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ---------- 页眉 ---------- */
+  .sheet__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 8mm;
+    padding-bottom: 4mm;
+    border-bottom: 2px solid var(--teal);
+  }
+  .kicker {
+    font-size: 8.5pt;
+    letter-spacing: .12em;
+    color: var(--teal);
+    font-weight: 600;
+    margin-bottom: 1.5mm;
+  }
+  .kicker .dot { color: var(--line-2); margin: 0 4px; }
+  h1 {
+    font-family: var(--font-serif);
+    font-size: 26pt;
+    line-height: 1.15;
+    letter-spacing: .01em;
+    margin: 0;
+  }
+  h1 .quote { color: var(--teal); }
+  .head__right { text-align: right; flex: none; }
+  .badge-time {
+    display: inline-block;
+    font-family: var(--font-num);
+    font-size: 8.5pt;
+    letter-spacing: .06em;
+    padding: 2mm 4mm;
+    border-radius: 999px;
+    background: var(--teal-soft);
+    color: var(--teal-deep);
+    font-weight: 600;
+  }
+  .head__sub {
+    font-size: 9.5pt;
+    color: var(--ink-2);
+    margin-top: 2mm;
+  }
+
+  /* ---------- 两幅图 ---------- */
+  .figrow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8mm;
+    margin-top: 6mm;
+  }
+  .figrow--sm {
+    grid-template-columns: 90mm 90mm;
+    justify-content: center;
+    gap: 6mm;
+    margin-top: 4mm;
+  }
+  .fig { margin: 0; }
+  .fig__art {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 480 / 340;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #dfeee9;
+    border: 1px solid var(--line-2);
+  }
+  .fig__art svg { display: block; position: absolute; inset: 0; width: 100%; height: 100%; }
+  .fig figcaption {
+    display: flex;
+    align-items: center;
+    gap: 3mm;
+    margin-top: 2.5mm;
+    font-size: 8.5pt;
+    color: var(--muted);
+  }
+  .tag {
+    flex: none;
+    font-size: 8pt;
+    font-weight: 600;
+    padding: 1mm 3mm;
+    border-radius: 999px;
+  }
+  .tag--dead { background: #eef0e2; color: #5c6335; }
+  .tag--live { background: var(--teal-soft); color: var(--teal-deep); }
+
+  /* ---------- 答案圈 ---------- */
+  .rings {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .rings svg { width: 100%; height: 100%; display: block; }
+
+  /* ---------- 规则 ---------- */
+  .rules {
+    display: grid;
+    grid-template-columns: 1.45fr 1fr;
+    gap: 7mm;
+    margin-top: auto;
+    padding-top: 6mm;
+  }
+  .rules h2, .side h2, .answers-h {
+    font-size: 9pt;
+    letter-spacing: .1em;
+    color: var(--teal);
+    margin: 0 0 2.5mm;
+    font-weight: 700;
+  }
+  ol.steps { margin: 0; padding: 0; list-style: none; counter-reset: s; }
+  ol.steps li {
+    counter-increment: s;
+    position: relative;
+    padding-left: 9mm;
+    margin-bottom: 2.5mm;
+    font-size: 9.5pt;
+    line-height: 1.6;
+  }
+  ol.steps li::before {
+    content: counter(s);
+    position: absolute;
+    left: 0;
+    top: .4mm;
+    width: 6mm;
+    height: 6mm;
+    border-radius: 50%;
+    background: var(--teal);
+    color: #fff;
+    font-family: var(--font-num);
+    font-size: 8pt;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .side {
+    border-left: 1px solid var(--line);
+    padding-left: 6mm;
+    font-size: 8.5pt;
+    color: var(--ink-2);
+    line-height: 1.65;
+  }
+  .side .hint {
+    display: block;
+    margin-top: 3mm;
+    padding: 2.5mm 3mm;
+    background: #fbf7ec;
+    border-radius: 6px;
+    color: #7a5a20;
+  }
+
+  /* ---------- 答案列表 ---------- */
+  .answers {
+    margin: 4mm 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 1.5mm;
+  }
+  .answers li {
+    display: grid;
+    grid-template-columns: 7mm 1fr;
+    align-items: start;
+    gap: 3mm;
+    font-size: 8.3pt;
+    line-height: 1.5;
+  }
+  .ans__no {
+    width: 6.4mm;
+    height: 6.4mm;
+    border-radius: 50%;
+    border: 1.4px solid #d64545;
+    color: #c33;
+    font-family: var(--font-num);
+    font-size: 7.6pt;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: .6mm;
+  }
+  .answers b { color: var(--ink); }
+  .answers .dir { color: var(--muted); }
+  .answers .why { color: var(--ink-2); }
+
+  /* ---------- 页脚 ---------- */
+  .sheet__foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6mm;
+    margin-top: auto;
+    padding-top: 4mm;
+    border-top: 1px solid var(--line);
+    font-size: 7.6pt;
+    color: var(--muted);
+  }
+  .sheet__foot .num { font-family: var(--font-num); letter-spacing: .08em; }
+
+  /* ---------- 话术块 ---------- */
+  .script {
+    margin-top: 3.5mm;
+    padding: 3mm 4.5mm;
+    background: var(--teal-soft);
+    border-radius: 8px;
+    border-left: 3px solid var(--teal);
+  }
+  .script .label {
+    font-size: 8pt;
+    letter-spacing: .1em;
+    color: var(--teal-deep);
+    font-weight: 700;
+    margin-bottom: 1.5mm;
+  }
+  .script p { margin: 0; font-size: 8.6pt; line-height: 1.65; color: var(--ink-2); }
+
+  /* ---------- 第 2 张专属：更紧的密度 ---------- */
+  .sheet--ans { padding: 8mm 12mm 6mm; }
+  .sheet--ans h1 { font-size: 19pt; }
+  .sheet--ans .head__sub { font-size: 8.4pt; margin-top: 1.2mm; }
+  .sheet--ans .figrow--sm {
+    grid-template-columns: 82mm 82mm;
+    gap: 5mm;
+    margin-top: 3mm;
+  }
+  .sheet--ans .answers { margin-top: 3mm; gap: 1.2mm; }
+  .sheet--ans .answers li { font-size: 8pt; line-height: 1.45; }
+  .sheet--ans .script { margin-top: 3mm; padding: 2.4mm 4mm; }
+  .sheet--ans .script p { font-size: 8.2pt; line-height: 1.55; }
+
+  /* ---------- 打印 ---------- */
+  @media print {
+    body { background: #fff; }
+    .toolbar { display: none !important; }
+    .sheet {
+      margin: 0;
+      box-shadow: none;
+      break-after: page;
+      page-break-after: always;
+    }
+    .sheet:last-of-type { break-after: auto; page-break-after: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <b>打印说明</b>　<kbd>Ctrl</kbd> + <kbd>P</kbd> → 纸张 <b>A4</b>、方向 <b>横向</b>、边距 <b>无</b>、勾选 <b>背景图形</b>；共 2 张，第 1 张给玩家、第 2 张留裁判用。
+</div>
+
+<!-- ============ 第 1 张：题面 ============ -->
+<section class="sheet">
+  <header class="sheet__head">
+    <div>
+      <div class="kicker">一池活水<span class="dot">·</span>项目编号 D-E091<span class="dot">·</span>校园清淤池塘观察</div>
+      <h1>寻找<span class="quote">「活水」</span>密码</h1>
+      <div class="head__sub">左边是清淤前的死水，右边是清淤后的池塘——把「活过来了」的地方找出来。</div>
+    </div>
+    <div class="head__right">
+      <span class="badge-time">30 秒 · 单人挑战</span>
+    </div>
+  </header>
+
+  <div class="figrow">
+    <figure class="fig">
+      <div class="fig__art" id="p1-before"></div>
+      <figcaption><span class="tag tag--dead">清淤前 · 死水</span>水浑、底泥厚、水面浮沫</figcaption>
+    </figure>
+    <figure class="fig">
+      <div class="fig__art" id="p1-after"></div>
+      <figcaption><span class="tag tag--live">清淤后 · 活水</span>看得见池底、有水草和小鱼</figcaption>
+    </figure>
+  </div>
+
+  <div class="rules">
+    <div>
+      <h2>怎么玩 · 三步</h2>
+      <ol class="steps">
+        <li>两张图并排看：<b>先看左边</b>（清淤前），再看右边（清淤后）。</li>
+        <li>在<b>两张图上</b>圈出至少 <b>3 处</b>「活过来了」的不同点：左图没了的、右图多出来的，都算。</li>
+        <li><b>30 秒</b>内找齐 3 处就算挑战成功；想加难度，就把全部 6 处都找出来。</li>
+      </ol>
+    </div>
+    <div class="side">
+      <h2>裁判请注意</h2>
+      不要求说对专业名词，能指出位置、说出「哪里不一样」就可以。玩家说出方向之后，再补一句科学解释（见第 2 张）。
+      <span class="hint">提示：可以提醒他按「水面 → 水中 → 水底」的顺序看，一次看一层，不容易漏。</span>
+    </div>
+  </div>
+
+  <footer class="sheet__foot">
+    <span>本图为科普示意插画，用于说明「清淤后池塘会发生哪些变化」，不代表实测数值；现场照片请使用你自己拍摄的图。</span>
+    <span class="num">1 / 2</span>
+  </footer>
+</section>
+
+<!-- ============ 第 2 张：答案卡 ============ -->
+<section class="sheet sheet--ans">
+  <header class="sheet__head">
+    <div>
+      <div class="kicker">一池活水<span class="dot">·</span>项目编号 D-E091<span class="dot">·</span>裁判用</div>
+      <h1>答案卡<span class="quote">：6 处变化</span></h1>
+      <div class="head__sub">红圈标出的是位置，下面一行是对应的一句话解释——照读就行。</div>
+    </div>
+    <div class="head__right">
+      <span class="badge-time">答案 · 请勿交给玩家</span>
+    </div>
+  </header>
+
+  <div class="figrow figrow--sm">
+    <figure class="fig">
+      <div class="fig__art" id="p2-before"></div>
+      <figcaption><span class="tag tag--dead">清淤前</span>①②③ 这里「有」</figcaption>
+    </figure>
+    <figure class="fig">
+      <div class="fig__art" id="p2-after"></div>
+      <figcaption><span class="tag tag--live">清淤后</span>④⑤⑥ 这里「多了」</figcaption>
+    </figure>
+  </div>
+
+  <div class="answers-h">六处变化 · 一句话解释</div>
+  <ol class="answers">
+    <li><span class="ans__no">1</span><div><b>水面浮沫没了。</b> <span class="dir">左图水面糊着一层黄绿色浮沫；</span> <span class="dir">右图干净得能照出影子。</span> <span class="why">浮沫是藻类和有机碎屑堆出来的，底泥一清、水一流动就散得住不了。</span></div></li>
+    <li><span class="ans__no">2</span><div><b>水里的小虫少了。</b> <span class="dir">左图水面下挂着一串「小逗号」（孑孓）；</span> <span class="dir">右图几乎找不到。</span> <span class="why">孑孓靠有机碎屑和静水过日子，水一动、天敌一多，它就待不住——蚊虫少了，池塘才不招人烦。</span></div></li>
+    <li><span class="ans__no">3</span><div><b>池底的厚淤泥变薄了。</b> <span class="dir">左图是黑褐色厚底泥；</span> <span class="dir">右图只剩薄薄一层浅色沙土。</span> <span class="why">底泥是氮、磷的「仓库」，不清掉它，水会继续被从底下「喂」脏。</span></div></li>
+    <li><span class="ans__no">4</span><div><b>水变清了，能看见池底。</b> <span class="dir">左图看不见底；</span> <span class="dir">右图能看清卵石。</span> <span class="why">悬浮物少了，阳光才进得到水下——这是后面水草能活的先决条件。</span></div></li>
+    <li><span class="ans__no">5</span><div><b>有小鱼在游了。</b> <span class="dir">左图水里空荡荡；</span> <span class="dir">右图小鱼贴着水草游。</span> <span class="why">鱼能活下来，说明溶氧够、食物链也立起来了，不是光「看着干净」。</span></div></li>
+    <li><span class="ans__no">6</span><div><b>沉水植物长起来了。</b> <span class="dir">左图只有几根枯苇；</span> <span class="dir">右图一片水草竖着长到水面下。</span> <span class="why">水草是「自净」的主力：吸走氮磷、稳住底泥、给微生物当落脚点。</span></div></li>
+  </ol>
+
+  <div class="script">
+    <div class="label">30 秒裁判话术 · 照读</div>
+    <p>「你看，水清了、草活了、蚊子少了——这三件事其实是连在一起的：水清 → 阳光进得去 → 水草活得成 → 水草把氮磷吸走、把底泥稳住 → 水就更清。这个能自己变干净、越转越好的循环，就叫<strong>自净能力</strong>。清淤只是把仓库清空，真正让池塘活下来的，是它重新长出这个循环。」</p>
+  </div>
+
+  <footer class="sheet__foot">
+    <span>项目编号 D-E091 ·《一池活水》校园清淤池塘定点观察与生态科普</span>
+    <span class="num">2 / 2</span>
+  </footer>
+</section>
+
+<script src="assets/pond.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* 插画 */
+  PondScene.render(document.getElementById('p1-before'), 'before');
+  PondScene.render(document.getElementById('p1-after'), 'after');
+  PondScene.render(document.getElementById('p2-before'), 'before');
+  PondScene.render(document.getElementById('p2-after'), 'after');
+
+  /* 答案圈：坐标与 use scene 的 viewBox(0 0 480 340) 一致 */
+  var RINGS = {
+    before: [
+      { n: 1, cx: 240, cy: 57,  rx: 150, ry: 17 },
+      { n: 2, cx: 132, cy: 115, rx: 76,  ry: 40 },
+      { n: 3, cx: 164, cy: 305, rx: 142, ry: 30 }
+    ],
+    after: [
+      { n: 4, cx: 140, cy: 152, rx: 86, ry: 46 },
+      { n: 5, cx: 258, cy: 216, rx: 62,  ry: 44 },
+      { n: 6, cx: 384, cy: 212, rx: 76,  ry: 74 }
+    ]
+  };
+
+  function ringSvg(list) {
+    var parts = [
+      '<svg viewBox="0 0 480 340" preserveAspectRatio="xMidYMid meet"',
+      ' xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'
+    ];
+    list.forEach(function (r) {
+      parts.push(
+        '<ellipse cx="' + r.cx + '" cy="' + r.cy + '" rx="' + r.rx + '" ry="' + r.ry + '"',
+        ' fill="none" stroke="#d64545" stroke-width="3.4" stroke-dasharray="10 7"',
+        ' stroke-linecap="round" opacity=".95"/>'
+      );
+      var bx = r.cx - r.rx * 0.707;
+      var by = r.cy - r.ry * 0.707;
+      parts.push(
+        '<circle cx="' + bx.toFixed(1) + '" cy="' + by.toFixed(1) + '" r="14.5"',
+        ' fill="#d64545" stroke="#ffffff" stroke-width="2"/>',
+        '<text x="' + bx.toFixed(1) + '" y="' + (by + 6.3).toFixed(1) + '"',
+        ' text-anchor="middle" font-family="Consolas, Menlo, monospace"',
+        ' font-size="17" font-weight="700" fill="#ffffff">' + r.n + '</text>'
+      );
+    });
+    parts.push('</svg>');
+    return parts.join('');
+  }
+
+  function addRings(hostId, list) {
+    var host = document.getElementById(hostId);
+    if (!host) { return; }
+    var box = document.createElement('div');
+    box.className = 'rings';
+    box.innerHTML = ringSvg(list);
+    host.appendChild(box);
+  }
+
+  addRings('p2-before', RINGS.before);
+  addRings('p2-after', RINGS.after);
+})();
+</script>
+</body>
+</html>
