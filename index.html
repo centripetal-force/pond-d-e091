@@ -179,6 +179,11 @@
 #recBody td:nth-child(3),
 #recBody td:nth-child(4) { white-space: nowrap; }
 
+/* 摆摊清单里的二维码 */
+.qr-box { display: flex; align-items: flex-start; gap: 14px; margin-top: 14px; }
+.qr-box img { flex: 0 0 auto; border: 1px solid var(--line); border-radius: 10px; background: #fff; padding: 5px; }
+.qr-box .note { margin: 2px 0 0; line-height: 1.7; }
+
 
   .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 
@@ -798,6 +803,10 @@
               <p class="note">▫ 二维码 1 张（指向 game.html，贴桌牌）</p>
               <p class="note">▫ 打印版 A4 两张（1 张给玩家、1 张答案）</p>
               <p class="note">▫ 小奖品：糖果 / 贴纸</p>
+            </div>
+            <div class="qr-box">
+              <img src="assets/qr-game.png" alt="扫码玩「寻找活水密码」" width="96" height="96">
+              <p class="note">手机扫码直接开玩。<br>印桌牌时把这张图放大到 6 cm 见方，<br>离 30 cm 能扫上就行；<br>下面那串网址失效了二维码就得重做。</p>
             </div>
           </div>
         </div>
