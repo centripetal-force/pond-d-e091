@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>摆摊桌牌 · 活水密码（A4 两份）· 一池活水 D-E091</title>
+<style>
+  :root{
+    --ink:#102624; --ink2:#33544f; --muted:#6d8b86;
+    --teal:#0e6f68; --teal-deep:#0a4f4a; --teal-soft:#e8f4f1;
+    --line:#cfded9;
+    --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",
+                "Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+    --font-serif:"Songti SC","STSong","Source Han Serif SC","Noto Serif SC",
+                 Georgia,"Times New Roman",serif;
+    --font-num:"SF Mono","JetBrains Mono","Cascadia Mono",Consolas,monospace;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:#eef2f1; color:var(--ink);
+    font-family:var(--font-sans); -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+
+  /* 屏幕上才显示的打印说明 */
+  .toolbar{
+    max-width:196mm; margin:12mm auto 6mm; padding:10px 16px;
+    background:#fff; border:1px solid var(--line); border-left:4px solid var(--teal);
+    border-radius:8px; font-size:13px; line-height:1.6; color:var(--ink2);
+  }
+  .toolbar b{ color:var(--teal-deep); }
+  .toolbar kbd{
+    font-family:var(--font-num); font-size:11.5px; background:var(--teal-soft);
+    border:1px solid #cfe3df; border-radius:4px; padding:1px 5px; color:var(--teal-deep);
+  }
+
+  /* A4 一张，里面两份一样的卡，中间虚线裁开 */
+  .sheet{
+    width:210mm; min-height:297mm; margin:0 auto 10mm; background:#fff;
+    padding:13mm 14mm; display:flex; flex-direction:column; align-items:center; gap:9mm;
+    box-shadow:0 6px 28px -18px rgba(10,60,55,.45);
+  }
+
+  .card{
+    width:182mm; height:130mm; flex:0 0 auto;
+    border:1px dashed #b9c9c5; border-radius:4mm;
+    padding:12mm 14mm;
+    display:grid; grid-template-columns:1fr 60mm; gap:8mm; align-items:center;
+    background:#fff;
+  }
+
+  .kicker{
+    font-size:9.5pt; letter-spacing:.08em; color:var(--teal);
+    display:flex; align-items:center; gap:6px; margin-bottom:3.5mm;
+  }
+  .kicker::before{ content:""; width:14px; height:2px; background:var(--teal); border-radius:2px; }
+
+  h1{
+    font-family:var(--font-serif); font-size:38pt; font-weight:700;
+    letter-spacing:.03em; margin:0 0 2.5mm; line-height:1.08; color:var(--teal-deep);
+  }
+  .sub{
+    font-size:13.5pt; font-weight:600; color:var(--ink2); margin-bottom:5mm;
+    display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+  }
+  .sub .badge{
+    font-family:var(--font-num); font-size:9pt; font-weight:600; letter-spacing:.04em;
+    color:#fff; background:var(--teal); border-radius:999px; padding:2.5px 10px;
+  }
+  .rule{
+    font-size:12pt; line-height:1.8; color:var(--ink2); margin:0 0 4.5mm;
+  }
+  .rule b{ color:var(--teal-deep); border-bottom:2px solid #bfe3dc; padding-bottom:1px; }
+  .tip{
+    font-size:9.5pt; line-height:1.6; color:var(--muted);
+    border-top:1px solid #eaf1ef; padding-top:3mm;
+  }
+
+  .qr{
+    text-align:center;
+    background:var(--teal-soft);
+    border-radius:6mm;
+    padding:7mm 4mm 6mm;
+  }
+  .qr img{
+    width:56mm; height:56mm; display:block; margin:0 auto 3mm;
+    image-rendering:pixelated;
+  }
+  .qr .scan{
+    font-size:11pt; font-weight:600; color:var(--teal-deep); line-height:1.4;
+  }
+  .qr .scan small{
+    display:block; font-size:8.6pt; font-weight:400; color:var(--muted); margin-top:1.2mm;
+  }
+
+  @page{ size:A4 portrait; margin:0; }
+  @media print{
+    body{ background:#fff; }
+    .toolbar{ display:none; }
+    .sheet{
+      margin:0; box-shadow:none; width:210mm; min-height:297mm;
+      break-after:page;
+    }
+    .card{ break-inside:avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  打印说明：<kbd>Ctrl</kbd> + <kbd>P</kbd> → 纸张 <b>A4</b>、方向 <b>纵向</b>、边距 <b>无</b>、勾选 <b>背景图形</b>；
+  一张纸上是<b>两份一模一样的桌牌</b>，沿中间虚线裁开，一份贴桌牌或硬纸板，另一份备用。
+</div>
+
+<div class="sheet">
+
+  <!-- 桌牌 1 -->
+  <section class="card">
+    <div class="txt">
+      <div class="kicker">一池活水 · 项目编号 D-E091</div>
+      <h1>活水密码</h1>
+      <div class="sub">
+        <span class="badge">30 秒</span> 找不同 · 单人挑战
+      </div>
+      <p class="rule">
+        左边是清淤前的死水，右边是清淤后的活水。<br>
+        找出 <b>3 处「活过来了」</b> 的地方，就算通关。
+      </p>
+      <div class="tip">找出 3 处即可挑战成功；找齐全部 6 处，是高手。</div>
+    </div>
+    <div class="qr">
+      <img src="assets/qr-game.png" alt="扫码开始玩：活水密码 找不同">
+      <div class="scan">手机扫码 · 立刻开玩<small>不用装 App，30 秒一局</small></div>
+    </div>
+  </section>
+
+  <!-- 桌牌 2（与上面完全一样，裁开后用） -->
+  <section class="card">
+    <div class="txt">
+      <div class="kicker">一池活水 · 项目编号 D-E091</div>
+      <h1>活水密码</h1>
+      <div class="sub">
+        <span class="badge">30 秒</span> 找不同 · 单人挑战
+      </div>
+      <p class="rule">
+        左边是清淤前的死水，右边是清淤后的活水。<br>
+        找出 <b>3 处「活过来了」</b> 的地方，就算通关。
+      </p>
+      <div class="tip">找出 3 处即可挑战成功；找齐全部 6 处，是高手。</div>
+    </div>
+    <div class="qr">
+      <img src="assets/qr-game.png" alt="扫码开始玩：活水密码 找不同">
+      <div class="scan">手机扫码 · 立刻开玩<small>不用装 App，30 秒一局</small></div>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>

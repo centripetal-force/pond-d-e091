@@ -306,7 +306,7 @@
         <dl class="row"><dt>监测对象</dt><dd>校园清淤池塘</dd></dl>
         <dl class="row"><dt>典型生境</dt><dd>进水口 · 塘心 · 岸边 · 植被区 <small>4 类</small></dd></dl>
         <dl class="row"><dt>监测指标</dt><dd>理化 4 项 · 生态 3 项 <small>共 7 项</small></dd></dl>
-        <dl class="row"><dt>观测周期</dt><dd>6 周 <small>9.28 – 11.8 · 每周一轮</small></dd></dl>
+        <dl class="row"><dt>观测周期</dt><dd>按周推进 <small>10.8 起 · 每周 1 次，幼虫每两周 1 次</small></dd></dl>
         <dl class="row"><dt>当前状态</dt><dd>数据采集中 <span class="chip" style="margin-left:6px">进行中</span></dd></dl>
       </aside>
     </div>
@@ -454,6 +454,14 @@
             单次异常（如暴雨后浑浊）会作为备注保留，不参与趋势判断。
           </p>
         </div>
+      </div>
+
+      <div class="callout" style="margin-top:22px">
+        <b>先说清楚：这些数不精确</b>
+        我们用的是简易工具——pH 试纸（30 秒目测比色）、自制透明度盘、溶解氧试剂盒、三合一检测盒（pH / 氨氮 / 亚硝酸盐）。
+        pH 受光照、色觉和计时影响，误差约 ±0.2–0.3；透明度盘是自制的，读数取到整厘米；
+        溶解氧比色同样是半级一跳。所以这些数用来表达<strong>趋势和量级</strong>，不当实验室精度用——
+        同一天测两次读数不一样，是正常的。
       </div>
     </div>
   </section>
@@ -914,12 +922,13 @@
     var s = v.toFixed(dec || 0);
     return dec ? s.replace(/\.0+$/, '') : s;
   }
-  function dText(cur, old, unit, dec) {
+  function dText(cur, old, unit, dec, gap) {
     if (cur === null) { return '本轮未测'; }
     if (old === null) { return '首轮读数 · 无可比轮次'; }
+    var far = (gap || 1) > 1;
     var dif = cur - old;
-    if (Math.abs(dif) < Math.pow(10, -dec) / 2) { return '与上一轮持平'; }
-    return '较上一轮 ' + (dif > 0 ? '↑ ' : '↓ ') + fN(Math.abs(dif), dec) + (unit ? ' ' + unit : '');
+    if (Math.abs(dif) < Math.pow(10, -dec) / 2) { return far ? '与上次测量持平' : '与上一轮持平'; }
+    return (far ? '较上次测量 ' : '较上一轮 ') + (dif > 0 ? '↑ ' : '↓ ') + fN(Math.abs(dif), dec) + (unit ? ' ' + unit : '');
   }
   /* 幼虫每两周才测一次，遇到「本轮没测」要往前找最近一次真正测到的轮次，
      否则卡片会空成「—」，看起来像忘了填。 */
@@ -939,15 +948,15 @@
       if (de) { de.textContent = '暂无记录'; }
       return;
     }
-    var old = null;
+    var old = null, oldI = -1;
     for (var j = hit.i - 1; j >= 0; j--) {
       var t = avgOf(rounds[j].rows, key);
-      if (t !== null) { old = t; break; }
+      if (t !== null) { old = t; oldI = j; break; }
     }
     var isLast = (hit.i === rounds.length - 1);
     if (ve) { ve.innerHTML = fN(hit.v, dec) + (unit ? '<small>' + unit + '</small>' : ''); }
     if (de) {
-      de.textContent = isLast ? dText(hit.v, old, unit, dec)
+      de.textContent = isLast ? dText(hit.v, old, unit, dec, hit.i - oldI)
                               : '最近测于 ' + hit.round.date + ' · 本轮未测';
     }
   }
