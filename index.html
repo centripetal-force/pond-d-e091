@@ -299,7 +299,7 @@
         <dl class="row"><dt>典型生境</dt><dd>进水口 · 塘心 · 岸边 · 植被区 <small>4 类</small></dd></dl>
         <dl class="row"><dt>监测指标</dt><dd>理化 4 项 · 生态 3 项 <small>共 7 项</small></dd></dl>
         <dl class="row"><dt>观测周期</dt><dd>按周推进 <small>10.8 起 · 每周 1 次，幼虫每两周 1 次</small></dd></dl>
-        <dl class="row"><dt>当前状态</dt><dd>数据采集中 <span class="chip" style="margin-left:6px">进行中</span></dd></dl>
+        <dl class="row"><dt>当前状态</dt><dd>本阶段观测已完成 <span class="chip" style="margin-left:6px">已完成</span></dd></dl>
       </aside>
     </div>
   </section>
@@ -338,7 +338,7 @@
         <div class="chart-legend">
           <span style="margin-left:auto" id="chartHint">累计 2 轮记录后自动生成曲线</span>
         </div>
-        <svg viewBox="0 0 640 260" role="img" aria-label="阶段水质趋势图占位：数据采集中">
+        <svg viewBox="0 0 640 260" role="img" aria-label="阶段水质趋势图占位：本阶段观测已完成">
           <g stroke="#eaf1ef" stroke-width="1">
             <line x1="56" y1="40"  x2="612" y2="40"/>
             <line x1="56" y1="90"  x2="612" y2="90"/>
@@ -370,7 +370,7 @@
           <text x="334" y="126" fill="#8fa7a2" font-size="14" font-family="sans-serif"
                 text-anchor="middle">阶段水质趋势分析图表</text>
           <text x="334" y="150" fill="#b3c6c1" font-size="12.5" font-family="sans-serif"
-                text-anchor="middle" id="chartHintSvg">数据采集中 · 持续更新</text>
+                text-anchor="middle" id="chartHintSvg">本阶段观测已完成</text>
         </svg>
         </div>
 
@@ -845,7 +845,7 @@
 <footer class="site-foot">
   <div class="wrap">
     <span>项目编号 D-E091 · 《一池活水》校园清淤池塘观测与科普</span>
-    <span>本页为阶段性汇报，数据持续更新中</span>
+    <span>本页为阶段性汇报 · 本阶段观测已完成</span>
   </div>
 </footer>
 
@@ -960,7 +960,7 @@
   var steps = [];
   for (var i = 1; i <= plan; i += 1) {
     var cls = i <= done ? 'is-done' : (i === done + 1 ? 'is-now' : '');
-    var txt = i <= done ? '已完成' : (i === done + 1 ? '进行中' : '计划');
+    var txt = i <= done ? '已完成' : (i === done + 1 ? '本轮' : '计划');
     steps.push('<div class="step ' + cls + '"><em>第 ' + i + ' 周 · ' + txt + '</em></div>');
   }
   document.getElementById('stepper').innerHTML = steps.join('');
