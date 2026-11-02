@@ -954,7 +954,9 @@
       if (t !== null) { old = t; oldI = j; break; }
     }
     var isLast = (hit.i === rounds.length - 1);
-    if (ve) { ve.innerHTML = fN(hit.v, dec) + (unit ? '<small>' + unit + '</small>' : ''); }
+    /* pH 习惯上写成 7.0，不能像 45 cm 那样把末尾的 .0 抹掉 */
+    var shown = (dec && key === 'pH') ? hit.v.toFixed(1) : fN(hit.v, dec);
+    if (ve) { ve.innerHTML = shown + (unit ? '<small>' + unit + '</small>' : ''); }
     if (de) {
       de.textContent = isLast ? dText(hit.v, old, unit, dec, hit.i - oldI)
                               : '最近测于 ' + hit.round.date + ' · 本轮未测';
