@@ -203,25 +203,6 @@
   }
   .quote b { color: var(--teal); }
 
-  .plan-list { margin: 0; padding: 0; list-style: none; counter-reset: p; display: grid; gap: 0; }
-  .plan-list li {
-    counter-increment: p; position: relative; padding: 0 0 22px 44px;
-    font-size: 14px; color: var(--ink-2);
-  }
-  .plan-list li:last-child { padding-bottom: 0; }
-  .plan-list li::before {
-    content: counter(p, decimal-leading-zero); position: absolute; left: 0; top: -2px;
-    font-family: var(--font-num); font-size: 12px; font-weight: 700; color: var(--aqua);
-    width: 30px; height: 30px; border: 1px solid var(--line-2); border-radius: 50%;
-    display: grid; place-items: center; background: #fff;
-  }
-  .plan-list li::after {
-    content: ""; position: absolute; left: 15px; top: 32px; bottom: 0;
-    border-left: 1px dashed var(--line-2);
-  }
-  .plan-list li:last-child::after { display: none; }
-  .plan-list h4 { font-size: 14.5px; margin-bottom: 2px; }
-  .plan-list p { font-size: 13px; color: var(--muted); }
 
   @media (max-width: 900px) {
     .hero__in { grid-template-columns: 1fr; gap: 34px; }
@@ -806,37 +787,6 @@
           </div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <section class="section" id="plan">
-    <div class="wrap wrap--narrow">
-      <div class="sec-head">
-        <span class="sec-no">08</span>
-        <div>
-          <h2>接下来要做的事</h2>
-          <p class="sec-sub">从「一次清淤」到「一条可持续的管护线」。</p>
-        </div>
-      </div>
-
-      <ol class="plan-list">
-        <li>
-          <h4>补齐 6 轮现场采样</h4>
-          <p>按固定点位与统一操作规程完成剩余轮次，形成完整的时间序列记录。</p>
-        </li>
-        <li>
-          <h4>生成阶段趋势图，与对照池比对</h4>
-          <p>把透明度、溶解氧、幼虫密度的方向性变化画成曲线，并与未清淤对照池并排比较。</p>
-        </li>
-        <li>
-          <h4>向学校后勤提交《池塘维护建议》</h4>
-          <p>把观测结论转成可执行的建议：补水时机、植物补植位置、落叶与垃圾清理周期。</p>
-        </li>
-        <li>
-          <h4>科普转化：摆摊游戏 + 本页长期更新</h4>
-          <p>把核心差异做成 30 秒能玩完的小游戏，让「生态恢复」这件事被更多同学看见。</p>
-        </li>
-      </ol>
     </div>
   </section>
 
